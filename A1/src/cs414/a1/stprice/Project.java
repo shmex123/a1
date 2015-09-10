@@ -68,15 +68,27 @@ public class Project {
 		}
 		return false;
 	}
+	public boolean endIfPossible() {
+		if(status == ProjectStatus.active) {
+			status = ProjectStatus.finished;
+			for(Worker w : new HashSet<Worker>(team)) { // for concurrent modification
+				removeTeamMember(w);
+			}
+			return true;
+		}
+		return false;
+	}
 	public void addTeamMember(Worker w) {
 		if(!validateNewTeamMember(w)) return;
 		if(this.team.add(w)) {
+			w.projects.add(this);
 			addToQualifications(w);
 			updateStatusIfNeeded();
 		}
 	}
 	public void removeTeamMember(Worker w) {
 		if(team.remove(w)) {
+			w.projects.remove(this);
 			removeFromQualifications(w);
 			updateStatusIfNeeded();
 		}

@@ -1,6 +1,12 @@
 package cs414.a1.stprice;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -161,6 +167,15 @@ public class CompanyTest {
 		c.hire(worker);
 		assertTrue(c.employees.contains(worker));
 	}
+	// Ensure a hired worker gets the project added to his project list
+	@Test
+	public void testProjectAddedToWorker() {
+		project.addQualification(q1);
+		company.projects.add(project);
+		worker.qualifications.add(q1);
+		company.hire(worker);
+		assertTrue(worker.projects.contains(project));
+	}
 	
 	
 	/* -------------------------------------------------------------------------
@@ -317,5 +332,87 @@ public class CompanyTest {
 		c.projects.add(project);
 		company.start(project);
 		assertTrue(project.status == ProjectStatus.planned);
+	}
+	
+	/* -------------------------------------------------------------------------
+	 * Finish Tests
+	 * -------------------------------------------------------------------------
+	 */
+	// Ensures that an active project becomes finished
+	@Test
+	public void testFinishActive() {
+		project.status = ProjectStatus.active;
+		company.projects.add(project);
+		company.finish(project);
+		assertTrue(project.status == ProjectStatus.finished);
+	}
+	// Ensures that a project not belonging to the company is affected
+	@Test
+	public void testFinishOther() {
+		project.status = ProjectStatus.active;
+		Company c = new Company("Microsoft");
+		c.projects.add(project);
+		company.finish(project);
+		assertTrue(project.status == ProjectStatus.active);
+	}
+	// Ensures that a suspended project doesnt become finished
+	@Test
+	public void testFinishSuspended() {
+		project.status = ProjectStatus.suspended;
+		company.projects.add(project);
+		company.finish(project);
+		assertTrue(project.status == ProjectStatus.suspended);
+	}
+	// Ensures that a planned project doesnt become finished
+	@Test
+	public void testFinishPlanned() {
+		company.projects.add(project);
+		company.finish(project);
+		assertTrue(project.status == ProjectStatus.planned);
+	}
+	// Ensures that a finished project removes its team
+	@Test
+	public void testFinishDisbandTeam() {
+		project.addQualification(q1);
+		worker.qualifications.add(q1);
+		company.projects.add(project);
+		company.hire(worker);
+		company.finish(project);
+		assertFalse(project.getTeam().contains(worker));
+	}
+	// Ensures that a finished project removes that project from the worker's
+	// project list
+	@Test
+	public void testFinishRemoveFromWorkerList() {
+		project.addQualification(q1);
+		worker.qualifications.add(q1);
+		company.projects.add(project);
+		company.hire(worker);
+		company.finish(project);
+		assertFalse(worker.projects.contains(project));
+	}
+	
+	/* -------------------------------------------------------------------------
+	 * Create Worker Tests
+	 * -------------------------------------------------------------------------
+	 */
+	// Ensures newly created worker is employed
+	@Test
+	public void testCreateWorkerEmployed() {
+		Set<Qualification> quals = new HashSet<Qualification>();
+		quals.add(q1);
+		quals.add(q2);
+		Worker w = company.createWorker("Human", quals);
+		assertTrue(company.employees.contains(w));
+	}
+	// Ensures newly added worker's qualifications are included in company's 
+	// workers per qualification lists
+	@Test
+	public void testCreateWorkerAddedToQualificationLists() {
+		Set<Qualification> quals = new HashSet<Qualification>();
+		quals.add(q1);
+		quals.add(q2);
+		Worker w = company.createWorker("Human", quals);
+		assertTrue(company.workersForQualification(q1).contains(w));
 	}
 }

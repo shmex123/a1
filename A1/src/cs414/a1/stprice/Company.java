@@ -43,12 +43,15 @@ public class Company {
 		}
 	}
 	public void finish(Project p) {
-		
+		if(validateProject(p)) {
+			p.endIfPossible();
+		}
 	}
 	public Worker createWorker(String nickname, 
 			Set<Qualification> qualifications) {
 		Worker w = new Worker(nickname, defaultSalary);
 		w.qualifications.addAll(qualifications);
+		hire(w);
 		return w;
 	}
 	public Project createProject(String name, Set<Worker> workers, 
@@ -56,6 +59,15 @@ public class Company {
 		Project p = new Project(name, size);
 		p.addQualifications(qualifications);
 		return p;
+	}
+	public Set<Worker> workersForQualification(Qualification q) {
+		Set<Worker> qualified = new HashSet<Worker>();
+		for(Worker w : employees) {
+			if(w.qualifications.contains(q)) {
+				qualified.add(w);
+			}
+		}
+		return qualified;
 	}
 	
 	/* -------------------------------------------------------------------------
