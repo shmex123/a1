@@ -22,7 +22,12 @@ public class Company {
 	 * -------------------------------------------------------------------------
 	 */
 	public void hire(Worker w) {
-
+		if(!validateWorker(w)) return;
+		employees.add(w);
+		w.employer = this;
+		for(Project p : determineEligibleProjects(w)) {
+			p.addTeamMember(w);
+		}
 	}
 	public void fire(Worker w) {
 
@@ -42,7 +47,7 @@ public class Company {
 	public Project createProject(String name, Set<Worker> workers, 
 			Set<Qualification> qualifications, ProjectSize size) {
 		Project p = new Project(name, size);
-		p.qualifications.addAll(qualifications);
+		p.addQualifications(qualifications);
 		return p;
 	}
 	
@@ -62,5 +67,22 @@ public class Company {
 	@Override
 	public String toString() {
 		return name + ":" + employees.size() + ":" + projects.size();
+	}
+	
+	/* -------------------------------------------------------------------------
+	 * Private Methods
+	 * -------------------------------------------------------------------------
+	 */
+	private boolean validateWorker(Worker w) {
+		if(w == null) return false;
+		return w.employer == null;
+	}
+	private Set<Project> determineEligibleProjects(Worker w) {
+		Set<Project> eligible = new HashSet<Project>();
+		for(Project p : projects) {
+			if(p.isHelpful(w) && p.isResumable()
+					&& p.size == ProjectSize.small) eligible.add(p);
+		}
+		return eligible;
 	}
 }
