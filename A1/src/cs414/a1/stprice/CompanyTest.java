@@ -260,4 +260,62 @@ public class CompanyTest {
 		company.fire(worker);
 		assertTrue(project.status == ProjectStatus.planned);
 	}
+	
+	/* -------------------------------------------------------------------------
+	 * Start Tests
+	 * -------------------------------------------------------------------------
+	 */
+	// Ensures a planned project with no qualifications that
+	// is started turns active
+	@Test
+	public void testStartPlanned() {
+		company.projects.add(project);
+		company.start(project);
+		assertTrue(project.status == ProjectStatus.active);
+	}
+	// Ensures a suspended project with no qualifications that
+	// is started turns active
+	@Test
+	public void testStartSuspended() {
+		project.status = ProjectStatus.suspended;
+		company.projects.add(project);
+		company.start(project);
+		assertTrue(project.status == ProjectStatus.active);
+	}
+	// Ensures a finished project cannot be started
+	@Test
+	public void testStartFinished() {
+		project.status = ProjectStatus.finished;
+		company.projects.add(project);
+		company.start(project);
+		assertTrue(project.status == ProjectStatus.finished);
+	}
+	// Ensures a planned project that does not have completely
+	// fulfilled requirements does not get its status changed
+	@Test
+	public void testStartUnfulfilledPlanned() {
+		project.addQualification(q1);
+		company.projects.add(project);
+		company.start(project);
+		assertTrue(project.status == ProjectStatus.planned);
+	}
+	// Ensures a suspended project that does not have completely
+	// fulfilled requirements does not get its status changed
+	@Test
+	public void testStartUnfulfilledSuspended() {
+		project.addQualification(q1);
+		project.status = ProjectStatus.suspended;
+		company.projects.add(project);
+		company.start(project);
+		assertTrue(project.status == ProjectStatus.suspended);
+	}
+	// Ensures a project that is not owned by a company does not
+	// get affected
+	@Test
+	public void testStartOtherProject() {
+		Company c = new Company("Microsoft");
+		c.projects.add(project);
+		company.start(project);
+		assertTrue(project.status == ProjectStatus.planned);
+	}
 }

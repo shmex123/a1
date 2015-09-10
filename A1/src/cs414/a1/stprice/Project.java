@@ -61,6 +61,13 @@ public class Project {
 		return status == ProjectStatus.suspended 
 				|| status == ProjectStatus.planned;
 	}
+	public boolean startIfPossible() {
+		if(isResumable() && missingQualifications().isEmpty()) {
+			status = ProjectStatus.active;
+			return true;
+		}
+		return false;
+	}
 	public void addTeamMember(Worker w) {
 		if(!validateNewTeamMember(w)) return;
 		if(this.team.add(w)) {

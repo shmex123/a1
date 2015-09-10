@@ -38,7 +38,9 @@ public class Company {
 		}
 	}
 	public void start(Project p) {
-		
+		if(validateProject(p)) {
+			p.startIfPossible();
+		}
 	}
 	public void finish(Project p) {
 		
@@ -89,5 +91,9 @@ public class Company {
 					&& p.size == ProjectSize.small) eligible.add(p);
 		}
 		return eligible;
+	}
+	private boolean validateProject(Project p) {
+		if(p == null) return false;
+		return projects.contains(p);
 	}
 }
