@@ -86,6 +86,11 @@ public class Project {
 			updateStatusIfNeeded();
 		}
 	}
+	public void addTeamMembers(Set<Worker> ws) {
+		for(Worker w : ws) {
+			addTeamMember(w);
+		}
+	}
 	public void removeTeamMember(Worker w) {
 		if(team.remove(w)) {
 			w.projects.remove(this);

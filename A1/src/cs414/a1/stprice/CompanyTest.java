@@ -415,4 +415,67 @@ public class CompanyTest {
 		Worker w = company.createWorker("Human", quals);
 		assertTrue(company.workersForQualification(q1).contains(w));
 	}
+	
+	/* -------------------------------------------------------------------------
+	 * Create Project Tests
+	 * -------------------------------------------------------------------------
+	 */
+	// Ensures newly created project is added to company's projects
+	@Test
+	public void testCreateProjectAddedToProjects() {
+		company.hire(worker);
+		Set<Worker> ws = new HashSet<Worker>();
+		ws.add(worker);
+		Set<Qualification> qs = new HashSet<Qualification>();
+		qs.add(q1);
+		qs.add(q2);
+		Project p = company.createProject("Test", ws, qs, ProjectSize.small);
+		assertTrue(company.projects.contains(p));
+	}
+	// Ensures newly created project is added to worker's project lists
+	@Test
+	public void testCreateProjectAddedToWorkerProjects() {
+		company.hire(worker);
+		Set<Worker> ws = new HashSet<Worker>();
+		ws.add(worker);
+		Set<Qualification> qs = new HashSet<Qualification>();
+		qs.add(q1);
+		qs.add(q2);
+		Project p = company.createProject("Test", ws, qs, ProjectSize.small);
+		assertTrue(worker.projects.contains(p));
+	}
+	// Ensures employees get added to project's team
+	@Test
+	public void testCreateProjectAddsTeam() {
+		company.hire(worker);
+		Set<Worker> ws = new HashSet<Worker>();
+		ws.add(worker);
+		Set<Qualification> qs = new HashSet<Qualification>();
+		qs.add(q1);
+		qs.add(q2);
+		Project p = company.createProject("Test", ws, qs, ProjectSize.small);
+		assertTrue(p.getTeam().contains(worker));
+	}
+	// Ensures non employees do not get added to projects team
+	@Test
+	public void testCreateProjectNonEmployeesNotAddedToTeam() {
+		Set<Worker> ws = new HashSet<Worker>();
+		ws.add(worker);
+		Set<Qualification> qs = new HashSet<Qualification>();
+		qs.add(q1);
+		qs.add(q2);
+		Project p = company.createProject("Test", ws, qs, ProjectSize.small);
+		assertFalse(p.getTeam().contains(worker));
+	}
+	// Ensures project is marked as planned to start
+	@Test
+	public void testCreateProjectMarkedPlanned() {
+		Set<Worker> ws = new HashSet<Worker>();
+		ws.add(worker);
+		Set<Qualification> qs = new HashSet<Qualification>();
+		qs.add(q1);
+		qs.add(q2);
+		Project p = company.createProject("Test", ws, qs, ProjectSize.small);
+		assertTrue(p.status == ProjectStatus.planned);
+	}
 }

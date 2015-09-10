@@ -56,8 +56,11 @@ public class Company {
 	}
 	public Project createProject(String name, Set<Worker> workers, 
 			Set<Qualification> qualifications, ProjectSize size) {
+		workers = filterEmployees(workers);
 		Project p = new Project(name, size);
 		p.addQualifications(qualifications);
+		p.addTeamMembers(workers);
+		projects.add(p);
 		return p;
 	}
 	public Set<Worker> workersForQualification(Qualification q) {
@@ -107,5 +110,12 @@ public class Company {
 	private boolean validateProject(Project p) {
 		if(p == null) return false;
 		return projects.contains(p);
+	}
+	private Set<Worker> filterEmployees(Set<Worker> ws) {
+		HashSet<Worker> emps = new HashSet<Worker>();
+		for(Worker w : ws) {
+			if(employees.contains(w)) emps.add(w);
+		}
+		return emps;
 	}
 }
