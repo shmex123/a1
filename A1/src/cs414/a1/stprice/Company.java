@@ -30,7 +30,12 @@ public class Company {
 		}
 	}
 	public void fire(Worker w) {
-
+		if(employees.remove(w)) {
+			w.employer = null;
+			for(Project p : projects) {
+				p.removeTeamMember(w);
+			}
+		}
 	}
 	public void start(Project p) {
 		

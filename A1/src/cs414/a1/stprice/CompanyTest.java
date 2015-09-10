@@ -235,7 +235,7 @@ public class CompanyTest {
 		worker.qualifications.add(q1);
 		company.hire(worker);
 		company.fire(worker);
-		assertTrue(project.missingQualifications().isEmpty());
+		assertFalse(project.missingQualifications().isEmpty());
 	}
 	// Ensure fired employee removed from active project causes it
 	// to become inactive
