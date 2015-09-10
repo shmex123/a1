@@ -7,12 +7,14 @@ public class Company {
 	
 	public final String name;
 	public final Set<Worker> employees;
-	public final Set<Project> projects;
+	public final Set<Project> projects; // care for coherency issues!
+	public final int defaultSalary;
 	
 	public Company(String name) {
 		this.name = name;
 		this.employees = new HashSet<Worker>();
 		this.projects = new HashSet<Project>();
+		this.defaultSalary = 100000;
 	}
 	
 	/* -------------------------------------------------------------------------
@@ -33,11 +35,15 @@ public class Company {
 	}
 	public Worker createWorker(String nickname, 
 			Set<Qualification> qualifications) {
-		return new Worker();
+		Worker w = new Worker(nickname, defaultSalary);
+		w.qualifications.addAll(qualifications);
+		return w;
 	}
 	public Project createProject(String name, Set<Worker> workers, 
 			Set<Qualification> qualifications, ProjectSize size) {
-		return new Project();
+		Project p = new Project(name, size);
+		p.qualifications.addAll(qualifications);
+		return p;
 	}
 	
 	/* -------------------------------------------------------------------------
