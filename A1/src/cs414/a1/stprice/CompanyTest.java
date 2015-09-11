@@ -64,7 +64,7 @@ public class CompanyTest {
 	@Test
 	public void testWorkerAddedToEmployees() {
 		company.hire(worker);
-		assertTrue(company.employees.contains(worker));
+		assertTrue(company.getEmployees().contains(worker));
 	}
 	// Ensure employed worker is not hired
 	@Test
@@ -72,15 +72,15 @@ public class CompanyTest {
 		Company c = new Company("Microsoft");
 		c.hire(worker);
 		company.hire(worker);
-		assertFalse(company.employees.contains(worker));
+		assertFalse(company.getEmployees().contains(worker));
 	}
 	// Ensure hired worker is added to small project that requires his 
 	// qualifications
 	@Test
 	public void testHireAddedToSmallProject() {
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		assertTrue(project.getTeam().contains(worker));
 	}
@@ -90,8 +90,8 @@ public class CompanyTest {
     public void testHireNotAddedToMediumProject() {
 		Project p = new Project("Medium Project", ProjectSize.medium);
 		p.addQualification(q1);
-		company.projects.add(p);
-		worker.qualifications.add(q1);
+		company.addProject(p);
+		worker.addQualification(q1);
 		company.hire(worker);
 		assertFalse(p.getTeam().contains(worker));
     }
@@ -101,8 +101,8 @@ public class CompanyTest {
 	public void testHireNotAddedToBigProject() {
 		Project p = new Project("Big Project", ProjectSize.big);
 		p.addQualification(q1);
-		company.projects.add(p);
-		worker.qualifications.add(q1);
+		company.addProject(p);
+		worker.addQualification(q1);
 		company.hire(worker);
 		assertFalse(p.getTeam().contains(worker));
 	}
@@ -112,8 +112,8 @@ public class CompanyTest {
 		Project p = new Project("Suspended", ProjectSize.small);
 		p.status = ProjectStatus.suspended;
 		p.addQualification(q1);
-		company.projects.add(p);
-		worker.qualifications.add(q1);
+		company.addProject(p);
+		worker.addQualification(q1);
 		company.hire(worker);;
 		assertTrue(p.getTeam().contains(worker));
 	}
@@ -122,8 +122,8 @@ public class CompanyTest {
 	public void testHireNotAddedToActive() {
 		project.status = ProjectStatus.active;
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		assertFalse(project.getTeam().contains(worker));
 	}
@@ -132,7 +132,7 @@ public class CompanyTest {
 	@Test
 	public void testHireUnqualifiedNotAddedToProject() {
 		project.addQualification(q1);
-		company.projects.add(project);
+		company.addProject(project);
 		company.hire(worker);
 		assertFalse(project.getTeam().contains(worker));
 	}
@@ -141,8 +141,8 @@ public class CompanyTest {
 	@Test
 	public void testHireSatisfiedRequirementsActivate() {
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		assertEquals(project.status, ProjectStatus.active);
 	}
@@ -153,8 +153,8 @@ public class CompanyTest {
 	public void testHireNotSatisfiedRequirementsNotActivate() {
 		project.addQualification(q1);
 		project.addQualification(q2);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		assertNotEquals(project.status, ProjectStatus.active);
 	}
@@ -165,16 +165,16 @@ public class CompanyTest {
 		company.fire(worker);
 		Company c = new Company("Microsoft");
 		c.hire(worker);
-		assertTrue(c.employees.contains(worker));
+		assertTrue(c.getEmployees().contains(worker));
 	}
 	// Ensure a hired worker gets the project added to his project list
 	@Test
 	public void testProjectAddedToWorker() {
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
-		assertTrue(worker.projects.contains(project));
+		assertTrue(worker.getProjects().contains(project));
 	}
 	
 	
@@ -187,13 +187,13 @@ public class CompanyTest {
 	public void testFire() {
 		company.hire(worker);
 		company.fire(worker);
-		assertFalse(company.employees.contains(worker));
+		assertFalse(company.getEmployees().contains(worker));
 	}
 	// Ensure firing a non employee doesnt do anything
 	@Test
 	public void testFireNonEmployee() {
 		company.fire(worker);
-		assertFalse(company.employees.contains(worker));
+		assertFalse(company.getEmployees().contains(worker));
 	}
 	// Ensure firing an employee removes their employer var
 	@Test
@@ -218,14 +218,14 @@ public class CompanyTest {
 		Company c = new Company("Microsoft");
 		c.hire(worker);
 		company.fire(worker);
-		assertTrue(c.employees.contains(worker));
+		assertTrue(c.getEmployees().contains(worker));
 	}
 	// Ensure fired employee gets removed from projects they were on
 	@Test
 	public void testFireRemoveFromProject() {
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		company.fire(worker);
 		assertFalse(project.getTeam().contains(worker));
@@ -235,8 +235,8 @@ public class CompanyTest {
 	public void testFireUnaffectedOtherProjects() {
 		Project p = new Project("Test", ProjectSize.small);
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		company.fire(worker);
 		assertTrue(p.status == ProjectStatus.planned);
@@ -246,8 +246,8 @@ public class CompanyTest {
 	@Test
 	public void testFireRemoveFromQualifications() {
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		company.fire(worker);
 		assertFalse(project.missingQualifications().isEmpty());
@@ -257,8 +257,8 @@ public class CompanyTest {
 	@Test
 	public void testFireMakeProjectInactive() {
 		project.addQualification(q1);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		company.fire(worker);
 		assertTrue(project.status == ProjectStatus.suspended);
@@ -269,8 +269,8 @@ public class CompanyTest {
 	public void testFireUnaffectedPlannedProject() {
 		project.addQualification(q1);
 		project.addQualification(q2);
-		company.projects.add(project);
-		worker.qualifications.add(q1);
+		company.addProject(project);
+		worker.addQualification(q1);
 		company.hire(worker);
 		company.fire(worker);
 		assertTrue(project.status == ProjectStatus.planned);
@@ -284,7 +284,7 @@ public class CompanyTest {
 	// is started turns active
 	@Test
 	public void testStartPlanned() {
-		company.projects.add(project);
+		company.addProject(project);
 		company.start(project);
 		assertTrue(project.status == ProjectStatus.active);
 	}
@@ -293,7 +293,7 @@ public class CompanyTest {
 	@Test
 	public void testStartSuspended() {
 		project.status = ProjectStatus.suspended;
-		company.projects.add(project);
+		company.addProject(project);
 		company.start(project);
 		assertTrue(project.status == ProjectStatus.active);
 	}
@@ -301,7 +301,7 @@ public class CompanyTest {
 	@Test
 	public void testStartFinished() {
 		project.status = ProjectStatus.finished;
-		company.projects.add(project);
+		company.addProject(project);
 		company.start(project);
 		assertTrue(project.status == ProjectStatus.finished);
 	}
@@ -310,7 +310,7 @@ public class CompanyTest {
 	@Test
 	public void testStartUnfulfilledPlanned() {
 		project.addQualification(q1);
-		company.projects.add(project);
+		company.addProject(project);
 		company.start(project);
 		assertTrue(project.status == ProjectStatus.planned);
 	}
@@ -320,7 +320,7 @@ public class CompanyTest {
 	public void testStartUnfulfilledSuspended() {
 		project.addQualification(q1);
 		project.status = ProjectStatus.suspended;
-		company.projects.add(project);
+		company.addProject(project);
 		company.start(project);
 		assertTrue(project.status == ProjectStatus.suspended);
 	}
@@ -329,7 +329,7 @@ public class CompanyTest {
 	@Test
 	public void testStartOtherProject() {
 		Company c = new Company("Microsoft");
-		c.projects.add(project);
+		c.addProject(project);
 		company.start(project);
 		assertTrue(project.status == ProjectStatus.planned);
 	}
@@ -342,7 +342,7 @@ public class CompanyTest {
 	@Test
 	public void testFinishActive() {
 		project.status = ProjectStatus.active;
-		company.projects.add(project);
+		company.addProject(project);
 		company.finish(project);
 		assertTrue(project.status == ProjectStatus.finished);
 	}
@@ -351,7 +351,7 @@ public class CompanyTest {
 	public void testFinishOther() {
 		project.status = ProjectStatus.active;
 		Company c = new Company("Microsoft");
-		c.projects.add(project);
+		c.addProject(project);
 		company.finish(project);
 		assertTrue(project.status == ProjectStatus.active);
 	}
@@ -359,14 +359,14 @@ public class CompanyTest {
 	@Test
 	public void testFinishSuspended() {
 		project.status = ProjectStatus.suspended;
-		company.projects.add(project);
+		company.addProject(project);
 		company.finish(project);
 		assertTrue(project.status == ProjectStatus.suspended);
 	}
 	// Ensures that a planned project doesnt become finished
 	@Test
 	public void testFinishPlanned() {
-		company.projects.add(project);
+		company.addProject(project);
 		company.finish(project);
 		assertTrue(project.status == ProjectStatus.planned);
 	}
@@ -374,8 +374,8 @@ public class CompanyTest {
 	@Test
 	public void testFinishDisbandTeam() {
 		project.addQualification(q1);
-		worker.qualifications.add(q1);
-		company.projects.add(project);
+		worker.addQualification(q1);
+		company.addProject(project);
 		company.hire(worker);
 		company.finish(project);
 		assertFalse(project.getTeam().contains(worker));
@@ -385,11 +385,11 @@ public class CompanyTest {
 	@Test
 	public void testFinishRemoveFromWorkerList() {
 		project.addQualification(q1);
-		worker.qualifications.add(q1);
-		company.projects.add(project);
+		worker.addQualification(q1);
+		company.addProject(project);
 		company.hire(worker);
 		company.finish(project);
-		assertFalse(worker.projects.contains(project));
+		assertFalse(worker.getProjects().contains(project));
 	}
 	
 	/* -------------------------------------------------------------------------
@@ -403,7 +403,7 @@ public class CompanyTest {
 		quals.add(q1);
 		quals.add(q2);
 		Worker w = company.createWorker("Human", quals);
-		assertTrue(company.employees.contains(w));
+		assertTrue(company.getEmployees().contains(w));
 	}
 	// Ensures newly added worker's qualifications are included in company's 
 	// workers per qualification lists
@@ -430,7 +430,7 @@ public class CompanyTest {
 		qs.add(q1);
 		qs.add(q2);
 		Project p = company.createProject("Test", ws, qs, ProjectSize.small);
-		assertTrue(company.projects.contains(p));
+		assertTrue(company.getProjects().contains(p));
 	}
 	// Ensures newly created project is added to worker's project lists
 	@Test
@@ -442,7 +442,7 @@ public class CompanyTest {
 		qs.add(q1);
 		qs.add(q2);
 		Project p = company.createProject("Test", ws, qs, ProjectSize.small);
-		assertTrue(worker.projects.contains(p));
+		assertTrue(worker.getProjects().contains(p));
 	}
 	// Ensures employees get added to project's team
 	@Test

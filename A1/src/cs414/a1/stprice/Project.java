@@ -52,7 +52,7 @@ public class Project {
 	}
 	public boolean isHelpful(Worker worker) {
 		Set<Qualification> missing = missingQualifications();
-		for(Qualification q : worker.qualifications) {
+		for(Qualification q : worker.getQualifications()) {
 			if(missing.contains(q)) return true;
 		}
 		return false;
@@ -81,7 +81,7 @@ public class Project {
 	public void addTeamMember(Worker w) {
 		if(!validateNewTeamMember(w)) return;
 		if(this.team.add(w)) {
-			w.projects.add(this);
+			w.addProject(this);
 			addToQualifications(w);
 			updateStatusIfNeeded();
 		}
@@ -93,7 +93,7 @@ public class Project {
 	}
 	public void removeTeamMember(Worker w) {
 		if(team.remove(w)) {
-			w.projects.remove(this);
+			w.removeProject(this);
 			removeFromQualifications(w);
 			updateStatusIfNeeded();
 		}
@@ -127,6 +127,7 @@ public class Project {
 	 */
 	private boolean validateNewTeamMember(Worker w) {
 		if(w == null) return false;
+		//if(w.willBecomeOverloaded(this)) return false;
 		return true;
 	}
 	private void updateStatusIfNeeded() {
@@ -141,14 +142,14 @@ public class Project {
 		}
 	}
 	private void addToQualifications(Worker w) {
-		for(Qualification q : w.qualifications) {
+		for(Qualification q : w.getQualifications()) {
 			if(qualifications.get(q) != null) {
 				qualifications.get(q).add(w);
 			}
 		}
 	}
 	private void removeFromQualifications(Worker w) {
-		for(Qualification q : w.qualifications) {
+		for(Qualification q : w.getQualifications()) {
 			if(qualifications.get(q) != null) {
 				qualifications.get(q).remove(w);
 			}

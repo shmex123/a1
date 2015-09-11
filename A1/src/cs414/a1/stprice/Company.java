@@ -6,8 +6,8 @@ import java.util.Set;
 public class Company {
 	
 	public final String name;
-	public final Set<Worker> employees;
-	public final Set<Project> projects; // care for coherency issues!
+	private final Set<Worker> employees;
+	private final Set<Project> projects; // care for coherency issues!
 	public final int defaultSalary;
 	
 	public Company(String name) {
@@ -50,9 +50,13 @@ public class Company {
 	public Worker createWorker(String nickname, 
 			Set<Qualification> qualifications) {
 		Worker w = new Worker(nickname, defaultSalary);
-		w.qualifications.addAll(qualifications);
+		w.addQualifications(qualifications);
 		hire(w);
 		return w;
+	}
+	public void addProject(Project p) {
+		if(!validateNewProject(p)) return;
+		projects.add(p);
 	}
 	public Project createProject(String name, Set<Worker> workers, 
 			Set<Qualification> qualifications, ProjectSize size) {
@@ -66,11 +70,17 @@ public class Company {
 	public Set<Worker> workersForQualification(Qualification q) {
 		Set<Worker> qualified = new HashSet<Worker>();
 		for(Worker w : employees) {
-			if(w.qualifications.contains(q)) {
+			if(w.getQualifications().contains(q)) {
 				qualified.add(w);
 			}
 		}
 		return qualified;
+	}
+	public Set<Worker> getEmployees() {
+		return new HashSet<Worker>(employees);
+	}
+	public Set<Project> getProjects() {
+		return new HashSet<Project>(projects);
 	}
 	
 	/* -------------------------------------------------------------------------
@@ -110,6 +120,10 @@ public class Company {
 	private boolean validateProject(Project p) {
 		if(p == null) return false;
 		return projects.contains(p);
+	}
+	private boolean validateNewProject(Project p) {
+		if(p == null) return false;
+		return true;
 	}
 	private Set<Worker> filterEmployees(Set<Worker> ws) {
 		HashSet<Worker> emps = new HashSet<Worker>();
